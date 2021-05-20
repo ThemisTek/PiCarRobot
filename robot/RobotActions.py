@@ -28,7 +28,7 @@ class RobotRunner():
         self.NNState = NeuralNetWorkRead.Unknown
         self.distance = 0
         self.confidence = 0
-        self.confidenceNeed = 0.99
+        self.confidenceNeed = 1
 
     def Update(self,NNState,distance,confidence):
         self.NNState = NNState
@@ -39,7 +39,7 @@ class RobotRunner():
         print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence} dist : {self.distance}')
     
     def Conf(self):
-        return self.confidence > self.confidenceNeed
+        return self.confidence >= self.confidenceNeed
 
     def UpdateState(self):
         self.PrintState()
