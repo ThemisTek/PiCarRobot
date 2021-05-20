@@ -81,9 +81,7 @@ class RobotRunner():
                 print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.TurningRight or self.State == RobotState.TurningLeft):
-            if(self.NNState == NeuralNetWorkRead.Stop and self.Conf()):
-                self.State = RobotState.Stop
-            elif(self.timeDif > 5):
+            if(self.timeDif > 5):
                 self.State = RobotState.MovingForward
                 print('changed to')
                 self.PrintState()
