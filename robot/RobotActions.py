@@ -104,6 +104,7 @@ class RobotRunner():
     def RunState (self):
         if(self.State == RobotState.Initial or self.State == RobotState.Stop):
             self.bw.speed = 0
+            self.fw.turn(90)
             self.bw.stop()
         elif(self.State == RobotState.MovingForward or self.State == RobotState.PreparedToTurnRight or self.State == RobotState.PrepartedToTurnLeft):
             self.fw.turn(90)

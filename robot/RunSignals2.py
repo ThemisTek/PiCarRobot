@@ -21,6 +21,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_TRIGGER,GPIO.OUT)
 GPIO.setup(GPIO_ECHO,GPIO.IN)
 
+RobotController = RobotActions.RobotRunner()
+RobotController.RunState()
+
 def distance():
     GPIO.output(GPIO_TRIGGER, True)
  
@@ -84,7 +87,6 @@ Labels = ['stop','right','left','up']
 cap = cv2.VideoCapture(0)
 lastRead = time.time()
 
-RobotController = RobotActions.RobotRunner()
 #distCl = DistanceClass(GPIO_ECHO,GPIO_TRIGGER)
 dist = distance()
 
