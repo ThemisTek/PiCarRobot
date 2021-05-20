@@ -90,7 +90,7 @@ class RobotRunner():
         elif(self.State == RobotState.PrepartedToTurnLeft):
             if(self.NNState == NeuralNetWorkRead.Right and self.Conf()) :
                 self.State = RobotState.PreparedToTurnRight
-            elif(self.distance < self.dista):
+            elif(self.distance < self.distanceToTurn):
                 self.State = RobotState.TurningLeft
                 print('changed to')
                 self.PrintState()
