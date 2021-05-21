@@ -81,7 +81,7 @@ class RobotRunner():
                 print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.TurningRight or self.State == RobotState.TurningLeft):
-            if(self.timeDif > 5):
+            if(self.timeDif > 7):
                 self.State = RobotState.MovingForward
                 print('changed to')
                 self.PrintState()
