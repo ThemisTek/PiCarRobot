@@ -1,14 +1,14 @@
 import RobotActions as RobotActions
 import numpy as np
-from IPython.display import Image
-import tensorflow as tf 
+# from IPython.display import Image
 from tensorflow.keras.applications import MobileNetV2
-from tensorflow import keras
-from tensorflow.keras import layers
+# from tensorflow import keras
+from tensorflow.keras.applications.mobilenet import preprocess_input
+# from tensorflow.keras import layers
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras import Sequential
 import cv2
-import queue
-import threading
-from keras import models
 from keras.preprocessing import image
 import RPi.GPIO as GPIO
 import time
@@ -61,12 +61,12 @@ image_size = 64
 mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3))
 print(mobile.summary())
 
-my_model = tf.keras.Sequential()
+my_model = Sequential()
 
  
 my_model.add(mobile)   
-my_model.add(layers.Flatten())
-my_model.add(layers.Dense(4, activation='softmax'))
+my_model.add(Flatten())
+my_model.add(Dense(4, activation='softmax'))
 
 allWeights = np.load('SignalsAllWeightsV2.npy',allow_pickle=True)
 i=0
@@ -94,7 +94,7 @@ while True:
     rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
     image_array = image.img_to_array(rgb_image)
     img_array_expanded_dims = np.expand_dims(image_array, axis=0)
-    proccesedImage = keras.applications.mobilenet.preprocess_input(img_array_expanded_dims)
+    proccesedImage = preprocess_input(img_array_expanded_dims)
     predictions = my_model.predict(proccesedImage)
     cv2.imshow("Threshold lower image", resized_image)
     l = cv2.waitKey(5) & 0XFF
