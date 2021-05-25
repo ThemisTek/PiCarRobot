@@ -84,7 +84,6 @@ for l in my_model.layers:
 Labels = ['stop','right','left','up']          
 
 
-os.environ['OPENCV_VIDEOIO_PRIORITY_MSMF'] = '0'
 cap = cv2.VideoCapture(0)
 lastRead = time.time()
 
