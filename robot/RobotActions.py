@@ -2,6 +2,10 @@ from enum import Enum
 import picar
 from picar import front_wheels,back_wheels
 import time
+import logging
+from vlogging import VisualRecord
+
+# from tensorflow.python.platform.tf_logging import log
 
 class RobotState(Enum):
     Initial = 0
@@ -20,7 +24,7 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self):
+    def __init__(self, TimeToSteer = 6, LogInfo = False):
         picar.setup()
         self.bw = back_wheels.Back_Wheels()
         self.fw = front_wheels.Front_Wheels()
@@ -34,13 +38,26 @@ class RobotRunner():
         self.curTime = time.time()
         self.timeDif = 0
         self.distanceToTurn = 35
+        self.TimeToSteer = TimeToSteer
+        self.FolderName = time.strftime("%Y%m%d-%H%M%S")
+        self.LogInfo = LogInfo
+        self.count = 0
+        if(LogInfo):
+            self.logger = logging.getLogger('./' + self.FolderName +'/logs.txt')
+            fh = logging.FileHandler('images.html',mode = "w")
+            self.logger.setLevel(logging.INFO)
+            self.logger.addHandler(fh)
+            
 
-    def Update(self,NNState,distance,confidence):
+    def Update(self,NNState,distance,confidence,imageRead = None):
+        self.count +=1
         self.NNState = NNState
         self.distance = distance
         self.confidence = confidence
-
         self.timeDif = self.curTime - self.lastTime
+        if(self.LogInfo and imageRead is not None):
+            logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence} dist : {self.distance} timeElapsed : {self.timeDif}"
+            self.logger.info(VisualRecord(logText,imageRead,str(self.count)))
     
     def countTimeInState(self,changedState : bool):
         self.curTime = time.time()
@@ -81,7 +98,7 @@ class RobotRunner():
                 print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.TurningRight or self.State == RobotState.TurningLeft):
-            if(self.timeDif > 7):
+            if(self.timeDif > self.TimeToSteer):
                 self.State = RobotState.MovingForward
                 print('changed to')
                 self.PrintState()

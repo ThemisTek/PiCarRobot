@@ -21,7 +21,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_TRIGGER,GPIO.OUT)
 GPIO.setup(GPIO_ECHO,GPIO.IN)
 
-RobotController = RobotActions.RobotRunner()
+RobotController = RobotActions.RobotRunner(LogInfo = True)
 RobotController.RunState()
 
 def distance():
@@ -63,8 +63,6 @@ print(mobile.summary())
 
 my_model = tf.keras.Sequential()
 
-#for l in mobile.layers:
-    #l.trainable = False
  
 my_model.add(mobile)   
 my_model.add(layers.Flatten())
@@ -87,12 +85,10 @@ Labels = ['stop','right','left','up']
 cap = cv2.VideoCapture(0)
 lastRead = time.time()
 
-#distCl = DistanceClass(GPIO_ECHO,GPIO_TRIGGER)
 dist = distance()
 
 while True:
     bgr_image = cap.read()[1]
-    #dist = distCl.LastDist()
 
     resized_image = cv2.resize(bgr_image,(image_size,image_size))
     rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
@@ -118,9 +114,8 @@ while True:
         NNState = RobotActions.NeuralNetWorkRead.Left
     elif(maxInd == 3):
         NNState = RobotActions.NeuralNetWorkRead.Up
-    RobotController.Update(NNState,dist,predictions[0][maxInd])
+    RobotController.Update(NNState,dist,predictions[0][maxInd],resized_image)
     RobotController.UpdateState()
     RobotController.RunState()
-    # print(dist,predictions[0][maxInd],Labels[maxInd])
  
 
