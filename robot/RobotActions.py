@@ -24,7 +24,7 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35):
+    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.95):
         picar.setup()
         self.bw = back_wheels.Back_Wheels()
         self.fw = front_wheels.Front_Wheels()
@@ -33,7 +33,7 @@ class RobotRunner():
         self.NNState = NeuralNetWorkRead.Unknown
         self.distance = 0
         self.confidence = 0
-        self.confidenceNeed = 1
+        self.confidenceNeeded = confidenceNeeded
         self.lastTime = time.time()
         self.curTime = time.time()
         self.timeDif = 0
@@ -127,14 +127,14 @@ class RobotRunner():
             self.bw.stop()
         elif(self.State == RobotState.MovingForward or self.State == RobotState.PreparedToTurnRight or self.State == RobotState.PrepartedToTurnLeft):
             self.fw.turn(90)
-            self.bw.speed = 45
+            self.bw.speed = self.forwardSpeed
             self.bw.backward()
         elif(self.State == RobotState.TurningLeft):
             self.fw.turn(45)
-            self.bw.speed = 35
+            self.bw.speed = self.turnSpeed
             self.bw.backward()
         elif(self.State == RobotState.TurningRight):
             self.fw.turn(45 + 90)
-            self.bw.speed = 35
+            self.bw.speed = self.turnSpeed
             self.bw.backward()
         
