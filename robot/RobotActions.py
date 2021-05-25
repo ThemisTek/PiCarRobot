@@ -72,7 +72,7 @@ class RobotRunner():
         print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence} dist : {self.distance} timeElapsed : {self.timeDif}')
     
     def Conf(self):
-        return self.confidence >= self.confidenceNeed
+        return self.confidence >= self.confidenceNeeded
 
     def UpdateState(self):
         self.PrintState()
