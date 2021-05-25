@@ -24,7 +24,7 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self, TimeToSteer = 6, LogInfo = False):
+    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35):
         picar.setup()
         self.bw = back_wheels.Back_Wheels()
         self.fw = front_wheels.Front_Wheels()
@@ -42,9 +42,11 @@ class RobotRunner():
         self.FolderName = time.strftime("%Y%m%d-%H%M%S")
         self.LogInfo = LogInfo
         self.count = 0
+        self.forwardSpeed = forwardSpeed
+        self.turnSpeed = turnSpeed
         if(LogInfo):
             self.logger = logging.getLogger('./' + self.FolderName +'/logs.txt')
-            fh = logging.FileHandler('images.html',mode = "w")
+            fh = logging.FileHandler(self.FolderName + '.html',mode = "w")
             self.logger.setLevel(logging.INFO)
             self.logger.addHandler(fh)
             
@@ -55,7 +57,7 @@ class RobotRunner():
         self.distance = distance
         self.confidence = confidence
         self.timeDif = self.curTime - self.lastTime
-        if(self.LogInfo and imageRead is not None):
+        if(self.LogInfo and imageRead is not None and self.count % 2 == 0):
             logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence} dist : {self.distance} timeElapsed : {self.timeDif}"
             self.logger.info(VisualRecord(logText,imageRead,str(self.count)))
     
