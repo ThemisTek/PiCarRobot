@@ -40,7 +40,10 @@ train_datagen = ImageDataGenerator(
       horizontal_flip=False,
       fill_mode='nearest')
 
-validation_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator(rescale=1./255, 
+      rotation_range=20,
+      width_shift_range=0.4,
+      height_shift_range=0.4)
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
