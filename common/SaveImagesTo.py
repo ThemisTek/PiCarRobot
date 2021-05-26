@@ -10,47 +10,16 @@ import io
 filename = fd.askopenfilename()
 window = tkinter.Tk()
 
-def ParseIm(images,i):
-    global width
-    global height
-    base64Im = images[i]['src']
-    base64Im = base64Im.split(',')[1]
-    imgBytes = base64.b64decode(str(base64Im) )
-    buffer = io.BytesIO(imgBytes)
-    img = Image.open(buffer)
-    img = img.resize((width,height))
-    imTk = ImageTk.PhotoImage(image=img, master = canvas)
-    return imTk
-
-def CreateImage(images,i):
-    global canvas
-    global globalImage
-    imageTk = ParseIm(images,i)
-    canvas.itemconfigure(globalImage, image=imageTk,anchor=tkinter.CENTER)
-
-
-def buttonPressed():
-    global i 
-    global images
-    print(i)
-    CreateImage(images,i)
-    i +=1
 
 
 
-btnUp = Button(window,text='up',command=buttonPressed)
-btnStop = Button(window,text='stop')
-btnLeft = Button(window,text='left')
-btnRight = Button(window,text='right')
-btnSkip = Button(window,text='skip')
 
 
 
-btnUp.grid(column=1,row=0)
-btnStop.grid(column=2,row=0)
-btnLeft.grid(column=1,row=1)
-btnRight.grid(column=2,row=1)
-btnSkip.grid(column=3,row=0)
+
+
+
+
 
 file = open(filename,'r')
 print(filename)
@@ -58,23 +27,69 @@ print(filename)
 fileData = file.read()
 soup = bs4.BeautifulSoup(fileData)
 
-
-list = soup.find_all('h4')
+hList = soup.find_all('h4')
 images = soup.find_all('img')
 
-print(len(list))
-print(len(images))
 
+class TkinterWindow():
+    def __init__(self,window,images,hList):
+        self.window = window
+        self.images = images
+        self.hlist = hList
+        self.i = 0
+        self.total = len(images)
+        self.width = 250
+        self.height = 250
 
-width = 128
-height = 128
+        self.btnUp = Button(window,text='up',command= lambda : self.buttonPressed('up'))
+        self.btnStop = Button(window,text='stop',command= lambda : self.buttonPressed('stop'))
+        self.btnLeft = Button(window,text='left',command= lambda : self.buttonPressed('left'))
+        self.btnRight = Button(window,text='right',command= lambda : self.buttonPressed('right'))
+        self.btnSkip = Button(window,text='skip',command= lambda : self.buttonPressed('skip'))
+        self.btnUp.grid(column=1,row=0)
+        self.btnStop.grid(column=2,row=0)
+        self.btnLeft.grid(column=1,row=1)
+        self.btnRight.grid(column=2,row=1)
+        self.btnSkip.grid(column=3,row=0)
 
-canvas = Canvas(window, width = width, height = height) 
-canvas.grid(column=0,row=2)
+        self.canvas = Canvas(self.window, width = self.width, height = self.height) 
+        self.im = self.ParseIm(self.images,1)
+        self.tKinterIm = self.canvas.create_image(128,128,image = self.im)
+        self.canvas.grid(column=0,row=2)
+        self.CreateImageList()
+        self.window.mainloop()
+    
+    def CreateImageList(self):
+        v = 0
+        self.ParsedIms = []
+        for srcIm in self.images:
+            tKinterIm = self.ParseIm(self.images,v)
+            self.ParsedIms.append(tKinterIm)
+            v+=1
 
-im = ParseIm(images,1)
-globalImage = canvas.create_image(128,128,image = im, anchor=tkinter.CENTER)
+    
+    def ParseIm(self,images,i):
+        global width
+        global height
+        base64Im = images[i]['src']
+        base64Im = base64Im.split(',')[1]
+        print(len(base64Im))
+        imgBytes = base64.b64decode(str(base64Im) )
+        buffer = io.BytesIO(imgBytes)
+        img = Image.open(buffer)
+        img = img.resize((self.width,self.height))
+        imTk = ImageTk.PhotoImage(image=img, master = self.canvas)
+        return imTk
 
-i = 0
+    def buttonPressed(self,imageType):
+        print(self.i)
+        if(self.i >= self.total):
+            return None
+        self.canvas.itemconfig(self.tKinterIm, image=self.ParsedIms[self.i])
+        self.i +=1
+        if(imageType != 'skip'):
+            print(imageType)
 
-window.mainloop()
+            
+
+tKinterClass = TkinterWindow(window,images,hList)
