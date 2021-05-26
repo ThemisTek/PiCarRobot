@@ -109,11 +109,11 @@ while True:
         lastRead = time.time()
     NNState = RobotActions.NeuralNetWorkRead.Unknown
     if(maxInd == 0):
-        NNState = RobotActions.NeuralNetWorkRead.Stop
+        NNState = RobotActions.NeuralNetWorkRead.Left
     elif(maxInd == 1):
         NNState = RobotActions.NeuralNetWorkRead.Right
     elif(maxInd == 2):
-        NNState = RobotActions.NeuralNetWorkRead.Left
+        NNState = RobotActions.NeuralNetWorkRead.Stop
     elif(maxInd == 3):
         NNState = RobotActions.NeuralNetWorkRead.Up
     RobotController.Update(NNState,dist,predictions[0][maxInd],resized_image)
