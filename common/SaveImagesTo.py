@@ -10,18 +10,8 @@ import io
 filename = fd.askopenfilename()
 window = tkinter.Tk()
 
-
-
-
-
-
-
-
-
-
-
-
 file = open(filename,'r')
+fileDescr = filename.split("/")[-1].replace('.html','')
 print(filename)
 
 fileData = file.read()
@@ -32,7 +22,7 @@ images = soup.find_all('img')
 
 
 class TkinterWindow():
-    def __init__(self,window,images,hList):
+    def __init__(self,window,images,hList,name):
         self.window = window
         self.images = images
         self.hlist = hList
@@ -51,9 +41,10 @@ class TkinterWindow():
         self.btnLeft.grid(column=1,row=1)
         self.btnRight.grid(column=2,row=1)
         self.btnSkip.grid(column=3,row=0)
+        self.name = name
 
         self.canvas = Canvas(self.window, width = self.width, height = self.height) 
-        self.im = self.ParseIm(self.images,1)
+        self.im = self.ParseIm(self.images,1)[0]
         self.tKinterIm = self.canvas.create_image(128,128,image = self.im)
         self.canvas.grid(column=0,row=2)
         self.CreateImageList()
@@ -63,8 +54,11 @@ class TkinterWindow():
         v = 0
         self.ParsedIms = []
         for srcIm in self.images:
-            tKinterIm = self.ParseIm(self.images,v)
-            self.ParsedIms.append(tKinterIm)
+            result = self.ParseIm(self.images,v)
+            tKinterIm = result[0]
+            pIm = result[1]
+            tupl = (tKinterIm,pIm)
+            self.ParsedIms.append(tupl)
             v+=1
 
     
@@ -79,17 +73,24 @@ class TkinterWindow():
         img = Image.open(buffer)
         img = img.resize((self.width,self.height))
         imTk = ImageTk.PhotoImage(image=img, master = self.canvas)
-        return imTk
+        return imTk, img
 
     def buttonPressed(self,imageType):
         print(self.i)
         if(self.i >= self.total):
             return None
-        self.canvas.itemconfig(self.tKinterIm, image=self.ParsedIms[self.i])
+        self.canvas.itemconfig(self.tKinterIm, image=self.ParsedIms[self.i][0])
         self.i +=1
         if(imageType != 'skip'):
             print(imageType)
+            self.saveImage(imageType)
 
+    def saveImage(self,imageType):
+        pIm = self.ParsedIms[self.i][1]
+        fileName = f'{self.name}-{imageType}-{self.i}.png'
+        placeToSave = f'./desktop/AllImages/{imageType}/{fileName}'
+        print(placeToSave)
+        pIm.save(placeToSave)
             
 
-tKinterClass = TkinterWindow(window,images,hList)
+tKinterClass = TkinterWindow(window,images,hList,fileDescr)
