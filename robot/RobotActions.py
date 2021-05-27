@@ -58,7 +58,7 @@ class RobotRunner():
         self.confidence = confidence
         self.timeDif = self.curTime - self.lastTime
         if(self.LogInfo and imageRead is not None and self.count % 2 == 0):
-            logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence} dist : {self.distance} timeElapsed : {self.timeDif}"
+            logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}"
             self.logger.info(VisualRecord(logText,imageRead,str(self.count)))
     
     def countTimeInState(self,changedState : bool):
@@ -69,7 +69,7 @@ class RobotRunner():
 
     
     def PrintState(self):
-        print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence} dist : {self.distance} timeElapsed : {self.timeDif}')
+        print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}')
     
     def Conf(self):
         return self.confidence >= self.confidenceNeeded
