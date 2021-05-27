@@ -1,3 +1,4 @@
+from tensorflow.python.keras.layers.core import Dropout
 import RobotActions as RobotActions
 import numpy as np
 # from IPython.display import Image
@@ -7,6 +8,7 @@ from tensorflow.keras.applications.mobilenet import preprocess_input
 # from tensorflow.keras import layers
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras import Sequential
 import cv2
 from keras.preprocessing import image
@@ -65,7 +67,8 @@ print(mobile.summary())
 my_model = Sequential()
 
  
-my_model.add(mobile)   
+my_model.add(mobile)  
+my_model.add(Dropout(0.5)) 
 my_model.add(Flatten())
 my_model.add(Dense(4, activation='softmax'))
 
