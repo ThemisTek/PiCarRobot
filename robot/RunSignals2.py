@@ -81,6 +81,12 @@ for l in my_model.layers:
         l.set_weights(weightsArray)
 
 
+IndexToState = {
+     0 : RobotActions.NeuralNetWorkRead.Left,
+     1 : RobotActions.NeuralNetWorkRead.Right,
+     2 : RobotActions.NeuralNetWorkRead.Stop,
+     3 : RobotActions.NeuralNetWorkRead.Up}
+
 Labels = ['stop','right','left','up']          
 
 
@@ -107,15 +113,7 @@ while True:
     if(now - lastRead > 1):
         dist = distance()
         lastRead = time.time()
-    NNState = RobotActions.NeuralNetWorkRead.Unknown
-    if(maxInd == 0):
-        NNState = RobotActions.NeuralNetWorkRead.Left
-    elif(maxInd == 1):
-        NNState = RobotActions.NeuralNetWorkRead.Right
-    elif(maxInd == 2):
-        NNState = RobotActions.NeuralNetWorkRead.Stop
-    elif(maxInd == 3):
-        NNState = RobotActions.NeuralNetWorkRead.Up
+    NNState = IndexToState[maxInd]
     RobotController.Update(NNState,dist,predictions[0][maxInd],resized_image)
     RobotController.UpdateState()
     RobotController.RunState()
