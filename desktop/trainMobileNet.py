@@ -51,7 +51,7 @@ validation_datagen = ImageDataGenerator(rescale=1./255,
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
-train_batchsize = 10
+train_batchsize = 15
 
 train_generator = train_datagen.flow_from_directory(
         train_dir,
