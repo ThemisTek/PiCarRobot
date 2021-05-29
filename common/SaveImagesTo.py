@@ -7,6 +7,7 @@ import base64
 import bs4
 import io
 
+
 filename = fd.askopenfilename()
 window = tkinter.Tk()
 

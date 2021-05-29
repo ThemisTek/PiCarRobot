@@ -61,7 +61,7 @@ def distance():
 
 
 image_size = 64
-mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3))
+mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.5)
 print(mobile.summary())
 
 my_model = Sequential()

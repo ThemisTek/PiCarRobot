@@ -21,7 +21,7 @@ from tensorflow.python.keras.backend import dropout
 from tensorflow.python.keras.layers.core import Dropout
 
 image_size = 64
-mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3))
+mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5)
 print(mobile.summary())
 
 # for l in mobile.layers:
@@ -30,7 +30,7 @@ print(mobile.summary())
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
 outPutMob = mobile(input)
 
-x = Dropout(0.5,name="dropout")(outPutMob)
+x = Dropout(0.4,name="dropout")(outPutMob)
 x = Flatten(name='flatten')(x)
 # x = Flatten(name='flatten')(outPutMob)
 x = Dense(4, activation='softmax', name='predictions')(x)
