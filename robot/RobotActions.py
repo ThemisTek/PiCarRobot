@@ -83,7 +83,7 @@ class RobotRunner():
                 print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.MovingForward):
-            if(self.NNState == NeuralNetWorkRead.Stop and self.Conf() and self.distance < 20):
+            if(self.NNState == NeuralNetWorkRead.Stop and self.Conf() and self.distance < 30):
                 self.State = RobotState.Stop
                 print('changed to')
                 self.PrintState()
