@@ -7,8 +7,8 @@ from vlogging import VisualRecord
 
 class ImageSaver :
     def __init__(self,cap):
-        self.width = 320
-        self.height = 200
+        self.width = 160
+        self.height = 100
         self.cap = cap
         self.image = np.empty((self.width,self.height,3))
         self.FolderName = "cameraLogs" + time.strftime("%Y%m%d-%H%M%S")
