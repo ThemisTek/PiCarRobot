@@ -22,7 +22,7 @@ from tensorflow.python.keras.layers import pooling
 from tensorflow.python.keras.layers.core import Dropout
 
 image_size = 100
-mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5,pooling = "max")
+mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
 
 # for l in mobile.layers:
@@ -35,7 +35,7 @@ outPutMob = mobile(input)
 x = Dropout(0.5,name="dropout")(outPutMob)
 x = Flatten(name='flatten')(x)
 # x = GlobalAveragePooling2D()(x)
-# x = Dense(1024,activation="relu")(x)
+# x = Dense(512,activation="relu")(x)
 
 x = Dense(4, activation='softmax', name='predictions')(x)
 my_model = tf.keras.Model(inputs = input, outputs=x)
@@ -55,7 +55,7 @@ validation_datagen = ImageDataGenerator(rescale=1./255,
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
-train_batchsize = 15
+train_batchsize = 5
 
 train_generator = train_datagen.flow_from_directory(
         train_dir,
@@ -82,8 +82,8 @@ idx2label = dict((v,k) for k,v in label2index.items())
 print(idx2label)
 
 
-opt = keras.optimizers.RMSprop(lr=0.001)
-opt2 = keras.optimizers.Adam()
+opt = keras.optimizers.RMSprop(lr=0.0001)
+opt2 = keras.optimizers.Adam(learning_rate=0.0001)
 my_model.compile(loss='categorical_crossentropy',
 optimizer=opt2,
 metrics=['accuracy'])
