@@ -11,7 +11,7 @@ class ImageSaver :
         self.height = 200
         self.cap = cap
         self.image = np.empty((self.width,self.height,3))
-        self.FolderName = "/cameraLogs/" + time.strftime("%Y%m%d-%H%M%S")
+        self.FolderName = "cameraLogs" + time.strftime("%Y%m%d-%H%M%S")
         self.logger = logging.getLogger('./' + self.FolderName +'/logs.txt')
         fh = logging.FileHandler(self.FolderName + '.html',mode = "w")
         self.logger.setLevel(logging.INFO)
