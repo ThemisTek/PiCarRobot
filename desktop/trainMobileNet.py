@@ -18,10 +18,11 @@ import tensorflow as tf
 from tensorflow.keras.applications import EfficientNetB0
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.python.keras.backend import dropout
+from tensorflow.python.keras.layers import pooling
 from tensorflow.python.keras.layers.core import Dropout
 
 image_size = 100
-mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5)
+mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5,pooling = "max")
 print(mobile.summary())
 
 # for l in mobile.layers:
@@ -30,24 +31,27 @@ print(mobile.summary())
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
 outPutMob = mobile(input)
 
-x = Dropout(0.4,name="dropout")(outPutMob)
-x = Flatten(name='flatten')(x)
 # x = Flatten(name='flatten')(outPutMob)
+x = Dropout(0.5,name="dropout")(outPutMob)
+x = Flatten(name='flatten')(x)
+# x = GlobalAveragePooling2D()(x)
+# x = Dense(1024,activation="relu")(x)
+
 x = Dense(4, activation='softmax', name='predictions')(x)
 my_model = tf.keras.Model(inputs = input, outputs=x)
 
 train_datagen = ImageDataGenerator(
       rescale=1./255,
       rotation_range=20,
-      width_shift_range=0.3,
-      height_shift_range=0.3,
+      width_shift_range=0.2,
+      height_shift_range=0.2,
       horizontal_flip=False,
       fill_mode='nearest')
 
 validation_datagen = ImageDataGenerator(rescale=1./255, 
       rotation_range=20,
-      width_shift_range=0.3,
-      height_shift_range=0.3)
+      width_shift_range=0.2,
+      height_shift_range=0.2)
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
@@ -79,8 +83,9 @@ print(idx2label)
 
 
 opt = keras.optimizers.RMSprop(lr=0.001)
+opt2 = keras.optimizers.Adam()
 my_model.compile(loss='categorical_crossentropy',
-optimizer=opt,
+optimizer=opt2,
 metrics=['accuracy'])
 
 history = my_model.fit_generator(
