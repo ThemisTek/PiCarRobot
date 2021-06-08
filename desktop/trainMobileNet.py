@@ -20,6 +20,8 @@ from tensorflow.keras.applications import MobileNetV2
 from tensorflow.python.keras.backend import dropout
 from tensorflow.python.keras.layers import pooling
 from tensorflow.python.keras.layers.core import Dropout
+import pandas as pd
+import time
 
 image_size = 100
 mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
@@ -55,7 +57,7 @@ validation_datagen = ImageDataGenerator(rescale=1./255,
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
-train_batchsize = 5
+train_batchsize = 10
 
 train_generator = train_datagen.flow_from_directory(
         train_dir,
@@ -99,3 +101,9 @@ history = my_model.fit_generator(
 
 my_model.save('signalsFullV2.h5')
 my_model.save_weights(filepath='signalsWeightsFullV2.h5')
+
+
+hist_df = pd.DataFrame(history.history)
+histFileName = time.strftime("%Y%m%d-%H%M%S") + '_history'
+with open(histFileName,mode="w") as f:
+      hist_df.to_json(f)
