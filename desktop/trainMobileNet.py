@@ -93,7 +93,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=10,
+      epochs=7,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
