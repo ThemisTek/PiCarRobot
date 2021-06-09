@@ -61,14 +61,14 @@ def distance():
 
 
 image_size = 100
-mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.35)
+mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.5)
 print(mobile.summary())
 
 my_model = Sequential()
 
  
 my_model.add(mobile)  
-my_model.add(Dropout(0.5)) 
+# my_model.add(Dropout(0.5)) 
 my_model.add(Flatten())
 my_model.add(Dense(4, activation='softmax'))
 
