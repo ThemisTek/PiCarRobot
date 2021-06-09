@@ -24,7 +24,7 @@ import pandas as pd
 import time
 
 image_size = 100
-mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
+mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5)
 print(mobile.summary())
 
 # for l in mobile.layers:
@@ -33,12 +33,11 @@ print(mobile.summary())
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
 outPutMob = mobile(input)
 
-# x = Flatten(name='flatten')(outPutMob)
-x = Dropout(0.5,name="dropout")(outPutMob)
-x = Flatten(name='flatten')(x)
+x = Flatten(name='flatten')(outPutMob)
+# x = Dropout(0.5,name="dropout")(outPutMob)
+# x = Flatten(name='flatten')(x)
 # x = GlobalAveragePooling2D()(x)
 # x = Dense(512,activation="relu")(x)
-
 x = Dense(4, activation='softmax', name='predictions')(x)
 my_model = tf.keras.Model(inputs = input, outputs=x)
 
@@ -65,7 +64,7 @@ train_generator = train_datagen.flow_from_directory(
         batch_size=train_batchsize,
         class_mode='categorical')
 
-val_batchsize=10
+val_batchsize=5
 
 validation_generator = validation_datagen.flow_from_directory(
         validation_dir,
@@ -93,7 +92,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=7,
+      epochs=15,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
@@ -104,6 +103,7 @@ my_model.save_weights(filepath='signalsWeightsFullV2.h5')
 
 
 hist_df = pd.DataFrame(history.history)
-histFileName = time.strftime("%Y%m%d-%H%M%S") + '_history'
+strTime = time.strftime("%Y%m%d-%H%M%S")
+histFileName = strTime + '_history'
 with open(histFileName,mode="w") as f:
       hist_df.to_json(f)
