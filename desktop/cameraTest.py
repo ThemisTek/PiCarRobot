@@ -6,7 +6,7 @@ from keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet import preprocess_input
 import keras
 
-image_size = 64
+image_size = 100
 model = keras.models.load_model('signalsFullV2.h5')
 
 
@@ -30,6 +30,7 @@ while True:
     image_array = image.img_to_array(rgb_image)
     img_array_expanded_dims = np.expand_dims(image_array, axis=0)
     proccesedImage = preprocess_input(img_array_expanded_dims)
+    # proccesedImage = np.dot(img_array_expanded_dims,1/255)
     predictions = model.predict(proccesedImage)
     
 

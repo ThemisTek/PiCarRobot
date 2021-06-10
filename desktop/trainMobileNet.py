@@ -24,7 +24,7 @@ import pandas as pd
 import time
 
 image_size = 100
-mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5)
+mobile = mobile = MobileNetV2(include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5)
 print(mobile.summary())
 
 # for l in mobile.layers:
@@ -33,26 +33,32 @@ print(mobile.summary())
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
 outPutMob = mobile(input)
 
-x = Flatten(name='flatten')(outPutMob)
-# x = Dropout(0.5,name="dropout")(outPutMob)
-# x = Flatten(name='flatten')(x)
+# x = Flatten(name='flatten')(outPutMob)
+x = Dropout(0.5,name="dropout")(outPutMob)
+x = Flatten(name='flatten')(x)
 # x = GlobalAveragePooling2D()(x)
 # x = Dense(512,activation="relu")(x)
+
 x = Dense(4, activation='softmax', name='predictions')(x)
 my_model = tf.keras.Model(inputs = input, outputs=x)
 
 train_datagen = ImageDataGenerator(
       rescale=1./255,
-      rotation_range=20,
+      rotation_range=0,
       width_shift_range=0.2,
       height_shift_range=0.2,
+      zoom_range=0.2,
+      brightness_range=(0.7,1.3),
       horizontal_flip=False,
       fill_mode='nearest')
 
 validation_datagen = ImageDataGenerator(rescale=1./255, 
-      rotation_range=20,
+      rotation_range=0,
       width_shift_range=0.2,
-      height_shift_range=0.2)
+      height_shift_range=0.2,
+      zoom_range=0.2,
+      brightness_range=(0.7,1.3)
+      )
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
@@ -64,7 +70,7 @@ train_generator = train_datagen.flow_from_directory(
         batch_size=train_batchsize,
         class_mode='categorical')
 
-val_batchsize=5
+val_batchsize=10
 
 validation_generator = validation_datagen.flow_from_directory(
         validation_dir,
@@ -83,11 +89,11 @@ idx2label = dict((v,k) for k,v in label2index.items())
 print(idx2label)
 
 
-opt = keras.optimizers.RMSprop(lr=0.0001)
-opt2 = keras.optimizers.Adam(learning_rate=0.0001)
+opt = keras.optimizers.Adam(learning_rate=0.0001)
 my_model.compile(loss='categorical_crossentropy',
-optimizer=opt2,
+optimizer=opt,
 metrics=['accuracy'])
+
 
 history = my_model.fit_generator(
       train_generator,
@@ -96,6 +102,8 @@ history = my_model.fit_generator(
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
+
+
 
 
 my_model.save('signalsFullV2.h5')
