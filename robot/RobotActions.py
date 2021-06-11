@@ -57,7 +57,7 @@ class RobotRunner():
         self.distance = distance
         self.confidence = confidence
         self.timeDif = self.curTime - self.lastTime
-        if(self.LogInfo and imageRead is not None and self.count % 2 == 0):
+        if(self.LogInfo and imageRead is not None and self.count % 1 == 0):
             logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}"
             self.logger.info(VisualRecord(logText,imageRead,str(self.count)))
     

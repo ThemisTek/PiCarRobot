@@ -24,7 +24,7 @@ import pandas as pd
 import time
 
 image_size = 100
-mobile = mobile = MobileNetV2(include_top=False,input_shape=(image_size,image_size,3),alpha = 0.5)
+mobile = mobile = MobileNetV2(weights=None,include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
 
 # for l in mobile.layers:
@@ -48,17 +48,11 @@ train_datagen = ImageDataGenerator(
       width_shift_range=0.2,
       height_shift_range=0.2,
       zoom_range=0.2,
-      brightness_range=(0.7,1.3),
+      brightness_range=(0.8,1.2),
       horizontal_flip=False,
       fill_mode='nearest')
 
-validation_datagen = ImageDataGenerator(rescale=1./255, 
-      rotation_range=0,
-      width_shift_range=0.2,
-      height_shift_range=0.2,
-      zoom_range=0.2,
-      brightness_range=(0.7,1.3)
-      )
+validation_datagen = ImageDataGenerator(rescale=1./255)
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
@@ -89,6 +83,8 @@ idx2label = dict((v,k) for k,v in label2index.items())
 print(idx2label)
 
 
+binaryAccuracy = tf.keras.metrics.BinaryAccuracy(threshold=0.9)
+
 opt = keras.optimizers.Adam(learning_rate=0.0001)
 my_model.compile(loss='categorical_crossentropy',
 optimizer=opt,
@@ -98,7 +94,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=15,
+      epochs=120,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
