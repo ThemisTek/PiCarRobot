@@ -17,7 +17,7 @@ if(valExists):
     shutil.rmtree (valFold)
 
 
-valPerc = 0.2
+valPerc = 0.15
 trainPerc = 1-valPerc
 
 for tag in AllTags:

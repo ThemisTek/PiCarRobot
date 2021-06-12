@@ -24,20 +24,17 @@ import pandas as pd
 import time
 
 image_size = 100
-mobile = mobile = MobileNetV2(weights=None,include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
+mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
 
-# for l in mobile.layers:
-#     l.trainable = False
+for l in mobile.layers:
+    l.trainable = False
 
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
 outPutMob = mobile(input)
 
-# x = Flatten(name='flatten')(outPutMob)
-x = Dropout(0.5,name="dropout")(outPutMob)
+x = Dropout(0.3,name="dropout")(outPutMob)
 x = Flatten(name='flatten')(x)
-# x = GlobalAveragePooling2D()(x)
-# x = Dense(512,activation="relu")(x)
 
 x = Dense(4, activation='softmax', name='predictions')(x)
 my_model = tf.keras.Model(inputs = input, outputs=x)
@@ -58,6 +55,7 @@ train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
 train_batchsize = 10
 
+
 train_generator = train_datagen.flow_from_directory(
         train_dir,
         target_size=(image_size, image_size),
@@ -65,6 +63,7 @@ train_generator = train_datagen.flow_from_directory(
         class_mode='categorical')
 
 val_batchsize=10
+
 
 validation_generator = validation_datagen.flow_from_directory(
         validation_dir,
@@ -94,7 +93,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=240,
+      epochs=20,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)

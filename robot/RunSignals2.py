@@ -103,9 +103,11 @@ while True:
 
     resized_image = cv2.resize(bgr_image,(image_size,image_size))
     rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
-    image_array = image.img_to_array(rgb_image)
-    img_array_expanded_dims = np.expand_dims(image_array, axis=0)
-    proccesedImage = preprocess_input(img_array_expanded_dims)
+    rgb_imageNormalized = np.dot(np.array(rgb_image,np.float),1/255)
+    proccesedImage = np.expand_dims(rgb_imageNormalized,1/255)
+    # image_array = image.img_to_array(rgb_image)
+    # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
+    # proccesedImage = preprocess_input(img_array_expanded_dims)
     predictions = my_model.predict(proccesedImage)
     cv2.imshow("Threshold lower image", resized_image)
     l = cv2.waitKey(5) & 0XFF
