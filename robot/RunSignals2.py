@@ -68,7 +68,7 @@ my_model = Sequential()
 
  
 my_model.add(mobile)  
-# my_model.add(Dropout(0.5)) 
+my_model.add(Dropout(0.5)) 
 my_model.add(Flatten())
 my_model.add(Dense(4, activation='softmax'))
 
