@@ -1,5 +1,6 @@
 import keras
 from keras import backend as K
+from keras import preprocessing
 from keras.layers.core import Dense, Activation
 from keras.optimizers import Adam
 from keras.metrics import categorical_crossentropy
@@ -18,10 +19,12 @@ import tensorflow as tf
 from tensorflow.keras.applications import EfficientNetB0
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.python.keras.backend import dropout
+from tensorflow.python.keras.engine.base_preprocessing_layer import PreprocessingLayer
 from tensorflow.python.keras.layers import pooling
 from tensorflow.python.keras.layers.core import Dropout
 import pandas as pd
 import time
+
 
 image_size = 100
 mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
@@ -31,7 +34,8 @@ print(mobile.summary())
 #     l.trainable = False
 
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
-outPutMob = mobile(input)
+PreProccess = preprocess_input(input)
+outPutMob = mobile(PreProccess)
 
 x = Dropout(0.5,name="dropout")(outPutMob)
 x = Flatten(name='flatten')(x)
@@ -39,8 +43,9 @@ x = Flatten(name='flatten')(x)
 x = Dense(4, activation='softmax', name='predictions')(x)
 my_model = tf.keras.Model(inputs = input, outputs=x)
 
+
 train_datagen = ImageDataGenerator(
-      rescale=1./255,
+      # rescale=1./255,
       rotation_range=5,
       width_shift_range=0.3,
       height_shift_range=0.3,
@@ -49,7 +54,8 @@ train_datagen = ImageDataGenerator(
       horizontal_flip=False,
       fill_mode='nearest')
 
-validation_datagen = ImageDataGenerator(rescale=1./255)
+# validation_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator()
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"

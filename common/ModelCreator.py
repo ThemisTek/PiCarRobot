@@ -33,8 +33,7 @@ class NetworkModel:
             mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = alpha)
             resize_layer = Sequential(
                 [
-                    Resizing(100,100),
-                    Rescaling(1./255)
+                    preprocess_input()
 
                 ])
             data_augmentation = Sequential([

@@ -11,7 +11,6 @@ model = keras.models.load_model('signalsFullV2.h5')
 
 
 train_datagen = ImageDataGenerator(
-      rescale=1./255,
       rotation_range=5,
       width_shift_range=0.3,
       height_shift_range=0.3,
@@ -26,21 +25,23 @@ print(label_dict)
 label_map = {y:x for x,y in label_dict.items()}
 print(label_map)
 
-# for _ in range(1):
-#     img,label = generator.next()
-#     print(type(img))
-#     # numpyImage = np.array(np.dot(img,255),np.uint8)
-#     predictions = model.predict(img[0:1,:,:,:])
-#     print(predictions[0] == label[0])
-#     imageThatGoesIn = img[0,:,:,:]
-#     cv2.imshow("",imageThatGoesIn)
-#     cv2.waitKey(0)
-#     a = predictions[0][0]
-#     b = predictions[0][1]
-#     c = predictions[0][2]
-#     d = predictions[0][3]
-#     predString = f'{label_map[0]}:{a:0.2f} {label_map[1]}:{b:0.2f} {label_map[2]}:{c:0.2f} {label_map[3]}:{d:0.2f} label:{label[0]}'
-#     print(predString)
+for _ in range(0):
+    img,label = generator.next()
+    print(type(img))
+    # numpyImage = np.array(np.dot(img,255),np.uint8)
+    predictions = model.predict(img[0:1,:,:,:])
+    print(predictions[0] == label[0])
+    imageThatGoesIn = img[0,:,:,:]
+    cv2.imshow("",imageThatGoesIn)
+    l = cv2.waitKey(0) & 0XFF
+    if(l == ord('q')):
+        break
+    a = predictions[0][0]
+    b = predictions[0][1]
+    c = predictions[0][2]
+    d = predictions[0][3]
+    predString = f'{label_map[0]}:{a:0.2f} {label_map[1]}:{b:0.2f} {label_map[2]}:{c:0.2f} {label_map[3]}:{d:0.2f} label:{label[0]}'
+    print(predString)
 
 
 
@@ -58,7 +59,8 @@ while True:
     # predictions = model.predict(proccesedImage)
     # numpyImage = np.array(np.dot(proccesedImage,255),np.uint8)
     # TestIm = train_datagen.apply_transform(resized_image)
-    TestIm =np.dot(np.array(rgb_image,np.float),1/255)
+    TestIm = rgb_image
+    # TestIm =np.dot(np.array(rgb_image,np.float),1/255)
     reshapedTestIm = np.expand_dims(TestIm,axis=0)
     predictions = model.predict(reshapedTestIm)
 
