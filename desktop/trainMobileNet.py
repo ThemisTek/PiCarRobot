@@ -44,9 +44,9 @@ my_model = tf.keras.Model(inputs = input, outputs=x)
 
 train_datagen = ImageDataGenerator(
       rescale=1./255,
-      rotation_range=0,
-      width_shift_range=0.2,
-      height_shift_range=0.2,
+      rotation_range=5,
+      width_shift_range=0.3,
+      height_shift_range=0.3,
       zoom_range=0.2,
       brightness_range=(0.8,1.2),
       horizontal_flip=False,
@@ -94,7 +94,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=120,
+      epochs=240,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
