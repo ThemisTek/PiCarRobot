@@ -36,10 +36,9 @@ cap = cv2.VideoCapture(0)
 while True:
     bgr_image = cap.read()[1]
 
-    bgr_image = cap.read()[1]
-
     resized_image = cv2.resize(bgr_image,(image_size,image_size))
-    rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
+    rgb_image = resized_image
+    # rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
     # image_array = image.img_to_array(rgb_image)
     # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
     # proccesedImage = preprocess_input(img_array_expanded_dims)

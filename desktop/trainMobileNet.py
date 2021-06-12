@@ -27,13 +27,13 @@ image_size = 100
 mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
 
-for l in mobile.layers:
-    l.trainable = False
+# for l in mobile.layers:
+#     l.trainable = False
 
 input = Input(shape=(image_size,image_size,3),name = 'image_input')
 outPutMob = mobile(input)
 
-x = Dropout(0.3,name="dropout")(outPutMob)
+x = Dropout(0.5,name="dropout")(outPutMob)
 x = Flatten(name='flatten')(x)
 
 x = Dense(4, activation='softmax', name='predictions')(x)
@@ -93,7 +93,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=20,
+      epochs=15,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
