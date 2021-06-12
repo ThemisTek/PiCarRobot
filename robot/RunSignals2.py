@@ -61,11 +61,8 @@ def distance():
 image_size = 100
 mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
-input = Input(shape=(image_size,image_size,3),name = 'image_input')
 my_model = Sequential()
-my_model.add(preprocess_input(input))
-
-my_model.add(mobile)  
+my_model.add(mobile(input))  
 my_model.add(Dropout(0.5)) 
 my_model.add(Flatten())
 my_model.add(Dense(4, activation='softmax'))
@@ -104,7 +101,7 @@ while True:
     proccesedImage = np.expand_dims(rgb_image,axis=0)
     # image_array = image.img_to_array(rgb_image)
     # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
-    # proccesedImage = preprocess_input(img_array_expanded_dims)
+    proccesedImage = preprocess_input(proccesedImage)
     predictions = my_model.predict(proccesedImage)
     cv2.imshow("Threshold lower image", resized_image)
     l = cv2.waitKey(5) & 0XFF

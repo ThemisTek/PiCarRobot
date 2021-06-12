@@ -18,6 +18,9 @@ print(model.summary())
 i = 0
 
 for l in model.layers:
+    print(l.name)
+    if(l.name == 'tf.math.truediv' or l.name == 'tf.math.subtract' or l.name == 'image_input'):
+        continue
     weights = l.get_weights()
     for subLayer in weights:
         SaveList.append(subLayer)
