@@ -6,9 +6,7 @@ from tensorflow.keras.applications import MobileNetV2
 # from tensorflow import keras
 from tensorflow.keras.applications.mobilenet import preprocess_input
 # from tensorflow.keras import layers
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import Dense,Flatten,Input,Dropout
 from tensorflow.keras import Sequential
 import cv2
 from keras.preprocessing import image
@@ -63,8 +61,9 @@ def distance():
 image_size = 100
 mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
+input = Input(shape=(image_size,image_size,3),name = 'image_input')
 my_model = Sequential()
-my_model.add(preprocess_input())
+my_model.add(preprocess_input(input))
 
 my_model.add(mobile)  
 my_model.add(Dropout(0.5)) 
