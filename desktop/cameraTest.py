@@ -10,7 +10,15 @@ image_size = 100
 model = keras.models.load_model('signalsFullV2.h5')
 
 
-train_datagen = ImageDataGenerator(rescale=1./255)
+train_datagen = ImageDataGenerator(
+      rescale=1./255,
+      rotation_range=5,
+      width_shift_range=0.3,
+      height_shift_range=0.3,
+      zoom_range=0.2,
+      brightness_range=(0.8,1.2),
+      horizontal_flip=False,
+      fill_mode='nearest')
 
 generator= train_datagen.flow_from_directory("./desktop/signals",target_size=  (image_size,image_size))
 label_dict = (generator.class_indices)
@@ -18,11 +26,15 @@ print(label_dict)
 label_map = {y:x for x,y in label_dict.items()}
 print(label_map)
 
-# for _ in range(15):
+# for _ in range(1):
 #     img,label = generator.next()
+#     print(type(img))
 #     # numpyImage = np.array(np.dot(img,255),np.uint8)
-#     print(img.shape)
 #     predictions = model.predict(img[0:1,:,:,:])
+#     print(predictions[0] == label[0])
+#     imageThatGoesIn = img[0,:,:,:]
+#     cv2.imshow("",imageThatGoesIn)
+#     cv2.waitKey(0)
 #     a = predictions[0][0]
 #     b = predictions[0][1]
 #     c = predictions[0][2]
@@ -37,8 +49,8 @@ while True:
     bgr_image = cap.read()[1]
 
     resized_image = cv2.resize(bgr_image,(image_size,image_size))
-    rgb_image = resized_image
-    # rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
+    # rgb_image = resized_image
+    rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
     # image_array = image.img_to_array(rgb_image)
     # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
     # proccesedImage = preprocess_input(img_array_expanded_dims)
@@ -50,7 +62,7 @@ while True:
     reshapedTestIm = np.expand_dims(TestIm,axis=0)
     predictions = model.predict(reshapedTestIm)
 
-    cv2.imshow("Threshold lower image", TestIm)
+    cv2.imshow("Threshold lower image", rgb_image)
     l = cv2.waitKey(5) & 0XFF
     if(l == ord('q')):
         break
