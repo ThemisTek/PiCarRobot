@@ -59,7 +59,7 @@ validation_datagen = ImageDataGenerator()
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
-train_batchsize = 10
+train_batchsize = 5
 
 
 train_generator = train_datagen.flow_from_directory(
@@ -99,7 +99,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=15,
+      epochs=25,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)
