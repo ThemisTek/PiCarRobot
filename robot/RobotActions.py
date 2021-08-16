@@ -1,6 +1,6 @@
 from enum import Enum
-import picar
-from picar import front_wheels,back_wheels
+# import picar
+# from picar import front_wheels,back_wheels
 import time
 import logging
 from vlogging import VisualRecord
