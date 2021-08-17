@@ -5,7 +5,7 @@ from numpy.core.arrayprint import TimedeltaFormat
 import RobotActions as RobotActions
 import numpy as np
 import cv2
-from keras.preprocessing import image
+# from keras.preprocessing import image
 import time
 import os
 import multiprocessing as mp
