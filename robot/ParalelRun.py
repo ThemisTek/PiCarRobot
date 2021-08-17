@@ -3,6 +3,7 @@ from multiprocessing import queues
 from multiprocessing.context import Process
 from numpy.core.arrayprint import TimedeltaFormat
 import RobotActions as RobotActions
+from RobotActions import NeuralNetWorkRead
 import numpy as np
 import cv2
 # from keras.preprocessing import image
