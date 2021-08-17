@@ -1,7 +1,7 @@
 from logging import exception
 from multiprocessing import queues
 from multiprocessing.context import Process
-from robot.RobotActions import NeuralNetWorkRead, RobotState
+from numpy.core.arrayprint import TimedeltaFormat
 import RobotActions as RobotActions
 import numpy as np
 import cv2
@@ -45,6 +45,7 @@ def distance():
 def RobotProccess(m):
     RobotController = RobotActions.RobotRunner(LogInfo = False)
     RobotController.RunState()
+    m['Start'] = 1
     while True :
         time.sleep(0.1)
         NNState = m['NeuralNetworkState']
@@ -58,6 +59,9 @@ def RobotProccess(m):
             print("Robot Error")
 
 def DistanceProccess(m):
+    while(m['Start'] == 0):
+        continue
+
     while True:
         time.sleep(0.25)
         try:
@@ -66,14 +70,31 @@ def DistanceProccess(m):
         except :
             print("Distance Error") 
 
-
+def GetStateByTime(timeDif):
+    NNState = NeuralNetWorkRead.Stop
+    if(timeDif <= 1):
+        NNState = NeuralNetWorkRead.Stop
+    elif(timeDif <=3):
+        NNState = NeuralNetWorkRead.Left
+    elif(timeDif<= 12):
+        NNState = NeuralNetWorkRead.Up
+    elif(timeDif<=20):
+        NNState = NeuralNetWorkRead.Right
+    else :
+        NNState = NeuralNetWorkRead.Stop
+    
+    return NNState
 
 
 def GetNeuralNetworkResponseProccess(m):
-    start = time.time()
 
+    while(m['Start'] == 0):
+        continue
+    start = time.time()
     while True:
         end = time.time()
+        dif = end - start
+        m['NeuralNetworkState'] = GetStateByTime(dif)
         time.sleep(0.5)
 
 
@@ -83,6 +104,7 @@ if __name__ == '__main__':
     m['NeuralNetworkState'] = NeuralNetWorkRead.Stop
     m['distance'] = 0
     m['confidence'] = 1
+    m['Start'] = 0
 
     p1 = Process(target=RobotProccess,args=(m,))
     p2 = Process(target=DistanceProccess,args=(m,))
