@@ -183,7 +183,7 @@ def distance():
     return distance
 
 def RobotProccess(m):
-    RobotController = RobotActions.RobotRunner(LogInfo = False)
+    RobotController = RobotRunner(LogInfo = False)
     RobotController.RunState()
     m['Start'] = 1
     while True :
