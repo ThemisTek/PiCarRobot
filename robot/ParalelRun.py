@@ -239,6 +239,7 @@ def GetNeuralNetworkResponseProccess(m):
 
 
 if __name__ == '__main__':
+    print("starting")
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(GPIO_TRIGGER,GPIO.OUT)
     GPIO.setup(GPIO_ECHO,GPIO.IN)
