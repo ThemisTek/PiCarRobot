@@ -12,6 +12,12 @@ import os
 import multiprocessing as mp
 from enum import Enum
 import RPi.GPIO as GPIO
+from enum import Enum
+import picar
+from picar import front_wheels,back_wheels
+import time
+import logging
+from vlogging import VisualRecord
 
 GPIO_TRIGGER = 16
 GPIO_ECHO = 20
