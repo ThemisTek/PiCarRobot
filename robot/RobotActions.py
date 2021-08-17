@@ -1,6 +1,6 @@
 from enum import Enum
-# import picar
-# from picar import front_wheels,back_wheels
+import picar
+from picar import front_wheels,back_wheels
 import time
 import logging
 from vlogging import VisualRecord
@@ -24,10 +24,15 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90):
-        picar.setup()
+    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True):
+
+        if(InitCar):
+            picar.setup()
+
         self.bw = back_wheels.Back_Wheels()
+
         self.fw = front_wheels.Front_Wheels()
+    
         self.PreviousState = RobotState.Initial
         self.State = RobotState.Initial
         self.NNState = NeuralNetWorkRead.Unknown

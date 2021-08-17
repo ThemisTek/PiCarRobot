@@ -182,9 +182,10 @@ def distance():
     GPIO.output(GPIO_TRIGGER, False)
     return distance
 
-def RobotProccess(m,backW,frontW):
-    RobotController = RobotActions.RobotRunner(LogInfo = False,backW = backW,frontW = frontW)
+def RobotProccess(m):
+    RobotController = RobotActions.RobotRunner(LogInfo = False,InitCar = False)
     RobotController.RunState()
+    print("InitDone")
     m['Start'] = 1
     while True :
         time.sleep(0.1)
@@ -251,7 +252,7 @@ if __name__ == '__main__':
     m['confidence'] = 1
     m['Start'] = 0
     picar.setup()
-    p1 = Process(target=RobotProccess,args=(m,front_wheels.Front_Wheels(),back_wheels.Back_Wheels()))
+    p1 = Process(target=RobotProccess,args=(m,))
     p2 = Process(target=DistanceProccess,args=(m,))
     p3 = Process(target=GetNeuralNetworkResponseProccess,args=(m,))
     p1.start()
