@@ -17,6 +17,7 @@ from picar import front_wheels,back_wheels
 import time
 import logging
 from vlogging import VisualRecord
+from RobotActions import NeuralNetWorkRead
 
 # class RobotState(Enum):
 #     Initial = 0
