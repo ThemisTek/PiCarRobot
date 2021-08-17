@@ -182,7 +182,7 @@ def distance():
     GPIO.output(GPIO_TRIGGER, False)
     return distance
 
-def RobotProccess(m,car,backW,frontW):
+def RobotProccess(m,backW,frontW):
     RobotController = RobotActions.RobotRunner(LogInfo = False,backW = backW,frontW = frontW)
     RobotController.RunState()
     m['Start'] = 1
