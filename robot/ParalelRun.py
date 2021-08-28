@@ -61,6 +61,9 @@ def RobotProccess(m):
     RobotController.RunState()
     print("InitDone")
     m['Start'] = 1
+    while (m['NetworkDone'] == 0):
+        continue
+
     while True :
         time.sleep(0.1)
         NNState = m['NeuralNetworkState']
@@ -105,6 +108,7 @@ def GetNeuralNetworkResponseProccess(m):
 
     while(m['Start'] == 0):
         continue
+    print('network starts')
     image_size = 100
     mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.35)
     print(mobile.summary())
@@ -133,6 +137,8 @@ def GetNeuralNetworkResponseProccess(m):
         3 : RobotActions.NeuralNetWorkRead.Up}
 
     Labels = ['stop','right','left','up']
+    m['NetworkDone'] = 1
+    print('network done')
     cap = cv2.VideoCapture(0)
     while True:
         time.sleep(0.5)
@@ -166,6 +172,7 @@ if __name__ == '__main__':
     m['distance'] = 0
     m['confidence'] = 1
     m['Start'] = 0
+    m['NetworkDone'] = 0
     picar.setup()
     p1 = Process(target=RobotProccess,args=(m,))
     p2 = Process(target=DistanceProccess,args=(m,))
