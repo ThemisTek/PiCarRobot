@@ -18,138 +18,12 @@ import time
 import logging
 from vlogging import VisualRecord
 from RobotActions import NeuralNetWorkRead
-
-# class RobotState(Enum):
-#     Initial = 0
-#     MovingForward = 1
-#     TurningRight = 2
-#     TurningLeft = 3
-#     Stop = 4
-#     PreparedToTurnRight = 5
-#     PrepartedToTurnLeft = 6
- 
-# class NeuralNetWorkRead(Enum):
-#     Unknown = -1
-#     Stop = 0
-#     Right = 1
-#     Left = 2
-#     Up = 3
-
-# class RobotRunner():
-#     def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90):
-#         picar.setup()
-#         self.bw = back_wheels.Back_Wheels()
-#         self.fw = front_wheels.Front_Wheels()
-#         self.PreviousState = RobotState.Initial
-#         self.State = RobotState.Initial
-#         self.NNState = NeuralNetWorkRead.Unknown
-#         self.distance = 0
-#         self.confidence = 0
-#         self.confidenceNeeded = confidenceNeeded
-#         self.lastTime = time.time()
-#         self.curTime = time.time()
-#         self.timeDif = 0
-#         self.distanceToTurn = 35
-#         self.TimeToSteer = TimeToSteer
-#         self.FolderName = time.strftime("%Y%m%d-%H%M%S")
-#         self.LogInfo = LogInfo
-#         self.count = 0
-#         self.forwardSpeed = forwardSpeed
-#         self.turnSpeed = turnSpeed
-#         if(LogInfo):
-#             self.logger = logging.getLogger('./' + self.FolderName +'/logs.txt')
-#             fh = logging.FileHandler(self.FolderName + '.html',mode = "w")
-#             self.logger.setLevel(logging.INFO)
-#             self.logger.addHandler(fh)
-            
-
-#     def Update(self,NNState,distance,confidence,imageRead = None):
-#         self.count +=1
-#         self.NNState = NNState
-#         self.distance = distance
-#         self.confidence = confidence
-#         self.timeDif = self.curTime - self.lastTime
-#         if(self.LogInfo and imageRead is not None and self.count % 1 == 0):
-#             logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}"
-#             self.logger.info(VisualRecord(logText,imageRead,str(self.count)))
-    
-#     def countTimeInState(self,changedState : bool):
-#         self.curTime = time.time()
-#         if(changedState):
-#             self.lastTime = self.curTime
-#         self.timeDif = self.lastTime - self.curTime
-
-    
-#     def PrintState(self):
-#         print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}')
-    
-#     def Conf(self):
-#         return self.confidence >= self.confidenceNeeded
-
-#     def UpdateState(self):
-#         self.PrintState()
-#         self.PreviousState = self.State
-#         if(self.State == RobotState.Initial or self.State == RobotState.Stop):
-#             if(self.NNState == NeuralNetWorkRead.Up and self.Conf()):
-#                 self.State = RobotState.MovingForward
-#                 print('changed to')
-#                 self.PrintState()
-#         elif(self.State == RobotState.MovingForward):
-#             if(self.NNState == NeuralNetWorkRead.Stop and self.Conf() and self.distance < 30):
-#                 self.State = RobotState.Stop
-#                 print('changed to')
-#                 self.PrintState()
-#             elif(self.NNState == NeuralNetWorkRead.Right and self.Conf()):
-#                 self.State = RobotState.PreparedToTurnRight
-#                 print('changed to')
-#                 self.PrintState()
-#             elif(self.NNState == NeuralNetWorkRead.Left and self.Conf()):
-#                 self.State = RobotState.PrepartedToTurnLeft
-#                 print('changed to')
-#                 self.PrintState()
-#             elif(self.distance < 10):
-#                 self.State = RobotState.Stop
-#                 print('changed to')
-#                 self.PrintState()
-#         elif(self.State == RobotState.TurningRight or self.State == RobotState.TurningLeft):
-#             if(self.timeDif > self.TimeToSteer):
-#                 self.State = RobotState.MovingForward
-#                 print('changed to')
-#                 self.PrintState()
-#         elif(self.State == RobotState.PrepartedToTurnLeft):
-#             if(self.NNState == NeuralNetWorkRead.Right and self.Conf()) :
-#                 self.State = RobotState.PreparedToTurnRight
-#             elif(self.distance < self.distanceToTurn):
-#                 self.State = RobotState.TurningLeft
-#                 print('changed to')
-#                 self.PrintState()
-#         elif(self.State == RobotState.PreparedToTurnRight):
-#             if(self.NNState == NeuralNetWorkRead.Left and self.Conf()) :
-#                 self.State = RobotState.PreparedToTurnRight
-#             elif(self.distance < self.distanceToTurn):
-#                 self.State = RobotState.TurningRight
-#                 print('changed to')
-#                 self.PrintState()
-#         self.countTimeInState(self.PreviousState != self.State)
-
-#     def RunState (self):
-#         if(self.State == RobotState.Initial or self.State == RobotState.Stop):
-#             self.bw.speed = 0
-#             self.fw.turn(90)
-#             self.bw.stop()
-#         elif(self.State == RobotState.MovingForward or self.State == RobotState.PreparedToTurnRight or self.State == RobotState.PrepartedToTurnLeft):
-#             self.fw.turn(90)
-#             self.bw.speed = self.forwardSpeed
-#             self.bw.backward()
-#         elif(self.State == RobotState.TurningLeft):
-#             self.fw.turn(45)
-#             self.bw.speed = self.turnSpeed
-#             self.bw.backward()
-#         elif(self.State == RobotState.TurningRight):
-#             self.fw.turn(45 + 90)
-#             self.bw.speed = self.turnSpeed
-#             self.bw.backward()
-        
+from tensorflow.keras.applications import MobileNetV2
+# from tensorflow import keras
+from tensorflow.keras.applications.mobilenet import preprocess_input
+# from tensorflow.keras import layers
+from tensorflow.keras.layers import Dense,Flatten,Input,Dropout
+from tensorflow.keras import Sequential
 
 
 GPIO_TRIGGER = 16
@@ -231,12 +105,53 @@ def GetNeuralNetworkResponseProccess(m):
 
     while(m['Start'] == 0):
         continue
-    start = time.time()
+    image_size = 100
+    mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.35)
+    print(mobile.summary())
+    my_model = Sequential()
+    my_model.add(mobile)  
+    my_model.add(Dropout(0.5)) 
+    my_model.add(Flatten())
+    my_model.add(Dense(4, activation='softmax'))
+
+    allWeights = np.load('SignalsAllWeightsV2.npy',allow_pickle=True)
+    i=0
+    for l in my_model.layers:
+        weightsArray = []
+        weights = l.get_weights()
+        for subLayer in weights:
+            weightsArray.append(allWeights[i])
+            i+=1
+        if(len(weightsArray)>0):
+            l.set_weights(weightsArray)
+
+
+    IndexToState = {
+        0 : RobotActions.NeuralNetWorkRead.Left,
+        1 : RobotActions.NeuralNetWorkRead.Right,
+        2 : RobotActions.NeuralNetWorkRead.Stop,
+        3 : RobotActions.NeuralNetWorkRead.Up}
+
+    Labels = ['stop','right','left','up']
+    cap = cv2.VideoCapture(0)
     while True:
-        end = time.time()
-        dif = end - start
-        m['NeuralNetworkState'] = GetStateByTime(dif)
         time.sleep(0.5)
+        bgr_image = cap.read()[1]
+
+        resized_image = cv2.resize(bgr_image,(image_size,image_size))
+        rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
+        proccesedImage = np.expand_dims(rgb_image,axis=0)
+        # image_array = image.img_to_array(rgb_image)
+        # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
+        proccesedImage = preprocess_input(proccesedImage)
+        predictions = my_model.predict(proccesedImage)
+        cv2.imshow("Threshold lower image", resized_image)
+        l = cv2.waitKey(5) & 0XFF
+        if(l == ord('q')):
+            break
+        maxInd = np.argmax(predictions)
+        NNState = IndexToState[maxInd]
+        m['NeuralNetworkState'] = NNState
 
 
 if __name__ == '__main__':
