@@ -140,6 +140,7 @@ def GetNeuralNetworkResponseProccess(m):
     m['NetworkDone'] = 1
     print('network done')
     cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)
     while True:
         time.sleep(0.5)
         bgr_image = cap.read()[1]

@@ -1,14 +1,17 @@
 import cv2
 import numpy as np
+import time
 
 cap = cv2.VideoCapture(0)
 
 image_size = 120
 red_thres = 40
 bg_thres = 50
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 
 while True:
-    bgr_image = cap.read()[1]
+    time.sleep(1)
+    bgr_image = cap.read()
     resized_image = cv2.resize(bgr_image,(image_size,image_size))
     resized_image = cv2.GaussianBlur(resized_image, (5,5), 0)
     hsv = cv2.cvtColor(resized_image,cv2.COLOR_BGR2HSV)
@@ -30,7 +33,7 @@ while True:
     lines = cv2.HoughLines(edges,1,np.pi/180,30)
     
     if(lines is not None):
-        cv2.imshow('line',lines)
+
         for rho,theta in lines[0]:
             a = np.cos(theta)
             b = np.sin(theta)
