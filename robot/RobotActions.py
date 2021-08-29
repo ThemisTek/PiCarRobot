@@ -24,7 +24,8 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True):
+    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True,distanceToTurn =  35,
+    distanceToDetectMin = 15, distanceToDetectMax = 60):
 
         if(InitCar):
             picar.setup()
@@ -42,13 +43,15 @@ class RobotRunner():
         self.lastTime = time.time()
         self.curTime = time.time()
         self.timeDif = 0
-        self.distanceToTurn = 35
+        self.distanceToTurn = distanceToTurn
         self.TimeToSteer = TimeToSteer
         self.FolderName = time.strftime("%Y%m%d-%H%M%S")
         self.LogInfo = LogInfo
         self.count = 0
         self.forwardSpeed = forwardSpeed
         self.turnSpeed = turnSpeed
+        self.distanceToDetectMin = distanceToDetectMin
+        self.distanceToDetectMax = distanceToDetectMax
         if(LogInfo):
             self.logger = logging.getLogger('./' + self.FolderName +'/logs.txt')
             fh = logging.FileHandler(self.FolderName + '.html',mode = "w")
@@ -77,7 +80,7 @@ class RobotRunner():
         print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}')
     
     def Conf(self):
-        return self.confidence >= self.confidenceNeeded
+        return self.confidence >= self.confidenceNeeded and self.distance >= self.distanceToDetectMin and self.distance <= self.distanceToDetectMax
 
     def UpdateState(self):
         self.PrintState()
