@@ -23,7 +23,7 @@ class ImageSaver :
             self.image = self.cap.read()[1]
             self.log()
             self.i +=1
-            cv2.imshow("Threshold lower image", self.image)
+            cv2.imshow("Recorded Image", self.image)
             l = cv2.waitKey(5) & 0XFF
             if(l == ord('q')):
                 self.cap.release()

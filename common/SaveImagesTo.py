@@ -1,7 +1,6 @@
 import tkinter
 from tkinter import Canvas
 from tkinter import Button, filedialog as fd
-from tkinter.constants import ANCHOR
 from PIL import ImageTk,Image
 import base64
 import bs4

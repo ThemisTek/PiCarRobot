@@ -118,7 +118,7 @@ def GetNeuralNetworkResponseProccess(m):
     my_model.add(Flatten())
     my_model.add(Dense(4, activation='softmax'))
 
-    allWeights = np.load('SignalsAllWeightsV2.npy',allow_pickle=True)
+    allWeights = np.load('SignalsAllWeights.npy',allow_pickle=True)
     i=0
     for l in my_model.layers:
         weightsArray = []
