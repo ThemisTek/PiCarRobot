@@ -1,29 +1,20 @@
-from logging import exception
-from multiprocessing import queues
+
 from multiprocessing.context import Process
-from numpy.core.arrayprint import TimedeltaFormat
 import RobotActions 
 import numpy as np
 import cv2
 # from keras.preprocessing import image
 import time
-import os
 import multiprocessing as mp
-from enum import Enum
 import RPi.GPIO as GPIO
 from enum import Enum
 import picar
-from picar import front_wheels,back_wheels
 import time
-import logging
-from vlogging import VisualRecord
 from RobotActions import NeuralNetWorkRead
-from tensorflow.keras.applications import MobileNetV2
+from keras.models import load_model
 # from tensorflow import keras
 from tensorflow.keras.applications.mobilenet import preprocess_input
 # from tensorflow.keras import layers
-from tensorflow.keras.layers import Dense,Flatten,Input,Dropout
-from tensorflow.keras import Sequential
 
 
 GPIO_TRIGGER = 16
@@ -110,24 +101,18 @@ def GetNeuralNetworkResponseProccess(m):
         continue
     print('network starts')
     image_size = 100
-    mobile  = MobileNetV2(weights='imagenet',include_top=False,input_shape =(image_size,image_size,3),alpha = 0.35)
-    print(mobile.summary())
-    my_model = Sequential()
-    my_model.add(mobile)  
-    my_model.add(Dropout(0.5)) 
-    my_model.add(Flatten())
-    my_model.add(Dense(4, activation='softmax'))
+    my_model = load_model("SignalsMobileModel.h5")
 
-    allWeights = np.load('SignalsAllWeights.npy',allow_pickle=True)
-    i=0
-    for l in my_model.layers:
-        weightsArray = []
-        weights = l.get_weights()
-        for subLayer in weights:
-            weightsArray.append(allWeights[i])
-            i+=1
-        if(len(weightsArray)>0):
-            l.set_weights(weightsArray)
+    # allWeights = np.load('SignalsAllWeights.npy',allow_pickle=True)
+    # i=0
+    # for l in my_model.layers:
+    #     weightsArray = []
+    #     weights = l.get_weights()
+    #     for subLayer in weights:
+    #         weightsArray.append(allWeights[i])
+    #         i+=1
+    #     if(len(weightsArray)>0):
+    #         l.set_weights(weightsArray)
 
 
     IndexToState = {
