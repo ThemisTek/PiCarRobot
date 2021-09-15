@@ -19,7 +19,7 @@ import pandas as pd
 import time
 
 
-image_size = 100
+image_size = 96
 mobile = mobile = MobileNetV2(weights='imagenet',include_top=False,input_shape=(image_size,image_size,3),alpha = 0.35)
 print(mobile.summary())
 
