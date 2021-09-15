@@ -5,7 +5,7 @@ from tensorflow.keras.applications import MobileNetV2
 import keras
 
 SaveList = []
-model = keras.models.load_model('signalsFullV2.h5')
+model = keras.models.load_model('signalsFull.h5')
 
 print(model.summary())
 
