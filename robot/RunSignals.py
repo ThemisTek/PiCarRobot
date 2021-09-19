@@ -1,3 +1,4 @@
+from robot.RobotActions import RobotState
 from tensorflow.python.keras.layers.core import Dropout
 import RobotActions as RobotActions
 import numpy as np
@@ -92,28 +93,38 @@ cap = cv2.VideoCapture(0)
 lastRead = time.time()
 
 dist = distance()
+resized_image = np.empty((image_size,image_size,3),np.uint8)
+confidence = 0
+
 
 while True:
-    bgr_image = cap.read()[1]
 
-    resized_image = cv2.resize(bgr_image,(image_size,image_size))
-    rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
-    proccesedImage = np.expand_dims(rgb_image,axis=0)
-    # image_array = image.img_to_array(rgb_image)
-    # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
-    proccesedImage = preprocess_input(proccesedImage)
-    predictions = my_model.predict(proccesedImage)
-    cv2.imshow("Threshold lower image", resized_image)
-    l = cv2.waitKey(5) & 0XFF
-    if(l == ord('q')):
-        break
-    maxInd = np.argmax(predictions)
-    now = time.time()
+    isTurning = RobotController.State == RobotState.TurningLeft or RobotController.State == RobotState.TurningRight 
+    maxInd = 0
+
+    bgr_image = cap.read()[1]
+    if(not isTurning):
+        resized_image = cv2.resize(bgr_image,(image_size,image_size))
+        rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
+        proccesedImage = np.expand_dims(rgb_image,axis=0)
+        # image_array = image.img_to_array(rgb_image)
+        # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
+        proccesedImage = preprocess_input(proccesedImage)
+        predictions = my_model.predict(proccesedImage)
+        cv2.imshow("Threshold lower image", resized_image)
+        l = cv2.waitKey(5) & 0XFF
+        if(l == ord('q')):
+            break
+        maxInd = np.argmax(predictions)
+        confidence = predictions[0][maxInd]
+
+    now = time.time()    
     if(now - lastRead > 1):
         dist = distance()
         lastRead = time.time()
+
     NNState = IndexToState[maxInd]
-    RobotController.Update(NNState,dist,predictions[0][maxInd],resized_image)
+    RobotController.Update(NNState,dist,confidence,resized_image)
     RobotController.UpdateState()
     RobotController.RunState()
  
