@@ -1,4 +1,3 @@
-from robot.RobotActions import RobotState
 from tensorflow.python.keras.layers.core import Dropout
 import RobotActions as RobotActions
 import numpy as np
@@ -99,7 +98,7 @@ confidence = 0
 
 while True:
 
-    isTurning = RobotController.State == RobotState.TurningLeft or RobotController.State == RobotState.TurningRight 
+    isTurning = RobotController.State == RobotActions.RobotState.TurningLeft or RobotController.State == RobotActions.RobotState.TurningRight 
     maxInd = 0
 
     bgr_image = cap.read()[1]
