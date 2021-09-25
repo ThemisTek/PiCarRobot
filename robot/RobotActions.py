@@ -24,8 +24,8 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True,distanceToTurn =  35,
-    distanceToDetectMin = 15, distanceToDetectMax = 65):
+    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True,distanceToTurn =  50,
+    distanceToDetectMin = 15, distanceToDetectMax = 70):
 
         if(InitCar):
             picar.setup()
