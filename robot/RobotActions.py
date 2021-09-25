@@ -24,7 +24,7 @@ class NeuralNetWorkRead(Enum):
     Up = 3
 
 class RobotRunner():
-    def __init__(self, TimeToSteer = 5.8, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True,distanceToTurn =  45,
+    def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True,distanceToTurn =  35,
     distanceToDetectMin = 15, distanceToDetectMax = 65):
 
         if(InitCar):
@@ -52,6 +52,7 @@ class RobotRunner():
         self.turnSpeed = turnSpeed
         self.distanceToDetectMin = distanceToDetectMin
         self.distanceToDetectMax = distanceToDetectMax
+        self.lastLog = 0
         if(LogInfo):
             self.logger = logging.getLogger('./' + self.FolderName +'/logs.txt')
             fh = logging.FileHandler(self.FolderName + '.html',mode = "w")
@@ -133,18 +134,18 @@ class RobotRunner():
     def RunState (self):
         if(self.State == RobotState.Initial or self.State == RobotState.Stop):
             self.bw.speed = 0
-            self.fw.turn(90)
+            self.fw.turn_straight()
             self.bw.stop()
         elif(self.State == RobotState.MovingForward or self.State == RobotState.PreparedToTurnRight or self.State == RobotState.PrepartedToTurnLeft):
-            self.fw.turn(90)
+            self.fw.turn_straight()
             self.bw.speed = self.forwardSpeed
             self.bw.backward()
         elif(self.State == RobotState.TurningLeft):
-            self.fw.turn(45)
+            self.fw.turn_left()
             self.bw.speed = self.turnSpeed
             self.bw.backward()
         elif(self.State == RobotState.TurningRight):
-            self.fw.turn(45 + 90)
+            self.fw.turn_right()
             self.bw.speed = self.turnSpeed
             self.bw.backward()
         
