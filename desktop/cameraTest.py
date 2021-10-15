@@ -1,4 +1,3 @@
-
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 import cv2
@@ -6,9 +5,8 @@ from keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet import preprocess_input
 import keras
 
-image_size = 100
-model = keras.models.load_model('signalsFullV2.h5')
-
+image_size = 96
+model = keras.models.load_model('signalsFull.h5')
 
 train_datagen = ImageDataGenerator(
       rotation_range=5,
@@ -19,6 +17,10 @@ train_datagen = ImageDataGenerator(
       horizontal_flip=False,
       fill_mode='nearest')
 
+# Ο DataGenerator διαβάζει τον φάκελο και από εκεί
+# μπορούμε να αντιστοιχίσουμε την έξοδο του δικτύου
+# με το όνομα του σήματος  
+
 generator= train_datagen.flow_from_directory("./desktop/signals",target_size=  (image_size,image_size))
 label_dict = (generator.class_indices)
 print(label_dict)
@@ -28,7 +30,6 @@ print(label_map)
 for _ in range(0):
     img,label = generator.next()
     print(type(img))
-    # numpyImage = np.array(np.dot(img,255),np.uint8)
     predictions = model.predict(img[0:1,:,:,:])
     print(predictions[0] == label[0])
     imageThatGoesIn = img[0,:,:,:]
@@ -43,28 +44,16 @@ for _ in range(0):
     predString = f'{label_map[0]}:{a:0.2f} {label_map[1]}:{b:0.2f} {label_map[2]}:{c:0.2f} {label_map[3]}:{d:0.2f} label:{label[0]}'
     print(predString)
 
-
-
 cap = cv2.VideoCapture(0)
 while True:
     bgr_image = cap.read()[1]
 
     resized_image = cv2.resize(bgr_image,(image_size,image_size))
-    # rgb_image = resized_image
     rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
-    # image_array = image.img_to_array(rgb_image)
-    # img_array_expanded_dims = np.expand_dims(image_array, axis=0)
-    # proccesedImage = preprocess_input(img_array_expanded_dims)
-    # # proccesedImage = np.dot(img_array_expanded_dims,1/255)
-    # predictions = model.predict(proccesedImage)
-    # numpyImage = np.array(np.dot(proccesedImage,255),np.uint8)
-    # TestIm = train_datagen.apply_transform(resized_image)
-    TestIm = rgb_image
-    # TestIm =np.dot(np.array(rgb_image,np.float),1/255)
-    reshapedTestIm = np.expand_dims(TestIm,axis=0)
+    reshapedTestIm = np.expand_dims(rgb_image,axis=0)
     predictions = model.predict(reshapedTestIm)
 
-    cv2.imshow("Threshold lower image", rgb_image)
+    cv2.imshow("Threshold lower image", bgr_image)
     l = cv2.waitKey(5) & 0XFF
     if(l == ord('q')):
         break

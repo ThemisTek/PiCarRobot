@@ -39,7 +39,7 @@ train_datagen = ImageDataGenerator(
       rotation_range=5,
       width_shift_range=0.1,
       height_shift_range=0.1,
-      zoom_range=0.3,
+      zoom_range=0.2,
       brightness_range=(0.8,1.2),
       horizontal_flip=False,
       fill_mode='nearest')
@@ -47,14 +47,14 @@ train_datagen = ImageDataGenerator(
 validation_datagen = ImageDataGenerator(rotation_range=5,
       width_shift_range=0.1,
       height_shift_range=0.1,
-      zoom_range=0.3,
+      zoom_range=0.2,
       brightness_range=(0.8,1.2),
       horizontal_flip=False,
       fill_mode='nearest')
 
 train_dir = "./desktop/signals"
 validation_dir = "./desktop/signals_val"
-train_batchsize = 25
+train_batchsize = 35
 
 train_generator = train_datagen.flow_from_directory(
         train_dir,
@@ -62,7 +62,7 @@ train_generator = train_datagen.flow_from_directory(
         batch_size=train_batchsize,
         class_mode='categorical')
 
-val_batchsize=15
+val_batchsize=25
 
 validation_generator = validation_datagen.flow_from_directory(
         validation_dir,
@@ -89,7 +89,7 @@ metrics=['accuracy'])
 history = my_model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=35,
+      epochs=90,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size ,
       verbose=1)

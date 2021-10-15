@@ -5,7 +5,7 @@ import time
 import logging
 from vlogging import VisualRecord
 
-# from tensorflow.python.platform.tf_logging import log
+# Κατάσταση ρομπότ
 
 class RobotState(Enum):
     Initial = 0
@@ -16,6 +16,8 @@ class RobotState(Enum):
     PreparedToTurnRight = 5
     PrepartedToTurnLeft = 6
  
+# Έξοδος δικτύου
+
 class NeuralNetWorkRead(Enum):
     Unknown = -1
     Stop = 0
@@ -27,6 +29,7 @@ class RobotRunner():
     def __init__(self, TimeToSteer = 6, LogInfo = False,forwardSpeed = 40,turnSpeed = 35, confidenceNeeded = 0.90,InitCar = True,distanceToTurn =  50,
     distanceToDetectMin = 15, distanceToDetectMax = 70):
 
+# Αρχικοποίηση κινητήρων
         if(InitCar):
             picar.setup()
 
@@ -61,12 +64,13 @@ class RobotRunner():
             
 
     def Update(self,NNState,distance,confidence,imageRead = None):
+# Logging και ενημέρωση των στοιχείων
         self.count +=1
         self.NNState = NNState
         self.distance = distance
         self.confidence = confidence
         self.timeDif = self.curTime - self.lastTime
-        if(self.LogInfo and imageRead is not None and self.count % 1 == 0):
+        if(self.LogInfo and imageRead is not None and self.count % 2 == 0):
             logText = f"Count :{self.count} State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}"
             self.logger.info(VisualRecord(logText,imageRead,str(self.count)))
     
@@ -80,56 +84,53 @@ class RobotRunner():
     def PrintState(self):
         print(f'State : {self.State} NN : {self.NNState} conf : {self.confidence:0.2f} dist : {self.distance:0.2f} timeElapsed : {self.timeDif:0.2f}')
     
+# Έλεγχος εμπιστοσύνης και απόστασης αντικειμένου
+
     def Conf(self):
         return ((self.confidence >= self.confidenceNeeded) 
         and (self.distance >= self.distanceToDetectMin) 
         and (self.distance <= self.distanceToDetectMax))
 
+# Άλλαγή κατάστασης βάση των μεταβλητών
     def UpdateState(self):
         self.PrintState()
         self.PreviousState = self.State
         if(self.State == RobotState.Initial or self.State == RobotState.Stop):
             if(self.NNState == NeuralNetWorkRead.Up and self.Conf()):
                 self.State = RobotState.MovingForward
-                print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.MovingForward):
             if(self.NNState == NeuralNetWorkRead.Stop and self.Conf() and self.distance < 30):
                 self.State = RobotState.Stop
-                print('changed to')
                 self.PrintState()
             elif(self.NNState == NeuralNetWorkRead.Right and self.Conf()):
                 self.State = RobotState.PreparedToTurnRight
-                print('changed to')
                 self.PrintState()
             elif(self.NNState == NeuralNetWorkRead.Left and self.Conf()):
                 self.State = RobotState.PrepartedToTurnLeft
-                print('changed to')
                 self.PrintState()
             elif(self.distance < 10):
                 self.State = RobotState.Stop
-                print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.TurningRight or self.State == RobotState.TurningLeft):
             if(self.timeDif > self.TimeToSteer):
                 self.State = RobotState.MovingForward
-                print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.PrepartedToTurnLeft):
             if(self.NNState == NeuralNetWorkRead.Right and self.Conf()) :
                 self.State = RobotState.PreparedToTurnRight
             elif(self.distance < self.distanceToTurn):
                 self.State = RobotState.TurningLeft
-                print('changed to')
                 self.PrintState()
         elif(self.State == RobotState.PreparedToTurnRight):
             if(self.NNState == NeuralNetWorkRead.Left and self.Conf()) :
                 self.State = RobotState.PreparedToTurnRight
             elif(self.distance < self.distanceToTurn):
                 self.State = RobotState.TurningRight
-                print('changed to')
                 self.PrintState()
         self.countTimeInState(self.PreviousState != self.State)
+
+# Εκτελεση της καταστασης
 
     def RunState (self):
         if(self.State == RobotState.Initial or self.State == RobotState.Stop):
